@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Pacientes</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #message { margin-top: 10px; padding: 10px; display: none; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
 </head>
 <body>
     <form id="patientForm">
@@ -46,11 +52,16 @@
         <button type="submit">Crear Paciente</button>
     </form>
 
+    <div id="message"></div>
+
     <script>
         document.getElementById('patientForm').addEventListener('submit', async function (event) {
             event.preventDefault();
 
-            const url = 'https://hl7-fhir-ehr-laura-garcia.onrender.com/patient'; // URL correcta sin JSON extra
+            const messageDiv = document.getElementById('message');
+            messageDiv.style.display = "none";
+
+            const url = 'https://hl7-fhir-ehr-laura-garcia.onrender.com/patient'; 
 
             const patient = {
                 resourceType: "Patient",
@@ -91,11 +102,15 @@
                 }
 
                 const data = await response.json();
-                alert(`Paciente creado exitosamente! ID: ${data.id}`);
-                document.getElementById('patientForm').reset(); // Limpiar formulario
+                messageDiv.textContent = `✅ Paciente creado exitosamente! ID: ${data.id}`;
+                messageDiv.className = "success";
+                messageDiv.style.display = "block";
+                document.getElementById('patientForm').reset();
             } catch (error) {
                 console.error('Error:', error);
-                alert(`Hubo un error al crear el paciente: ${error.message}`);
+                messageDiv.textContent = `❌ Hubo un error al crear el paciente: ${error.message}`;
+                messageDiv.className = "error";
+                messageDiv.style.display = "block";
             }
         });
     </script>

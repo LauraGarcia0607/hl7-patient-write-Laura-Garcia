@@ -5,43 +5,19 @@ document.getElementById('patientForm').addEventListener('submit', async function
     const familyName = document.getElementById('familyName').value.trim();
     const gender = document.getElementById('gender').value;
     const birthDate = document.getElementById('birthDate').value;
-    const identifierSystem = document.getElementById('identifierSystem').value.trim();
     const identifierValue = document.getElementById('identifierValue').value.trim();
-    const cellPhone = document.getElementById('cellPhone').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const address = document.getElementById('address').value.trim();
-    const city = document.getElementById('city').value.trim();
-    const postalCode = document.getElementById('postalCode').value.trim();
 
-    if (!name || !familyName || !gender || !birthDate || !identifierSystem || !identifierValue) {
+    if (!name || !familyName || !gender || !birthDate || !identifierValue) {
         alert("Por favor, complete todos los campos obligatorios.");
         return;
     }
 
     const patient = {
         resourceType: "Patient",
-        name: [{
-            use: "official",
-            given: [name],
-            family: familyName
-        }],
+        name: [{ use: "official", given: [name], family: familyName }],
         gender: gender,
         birthDate: birthDate,
-        identifier: [{
-            system: identifierSystem,
-            value: identifierValue
-        }],
-        telecom: [
-            cellPhone ? { system: "phone", value: cellPhone, use: "home" } : null,
-            email ? { system: "email", value: email, use: "home" } : null
-        ].filter(Boolean),
-        address: [{
-            use: "home",
-            line: address ? [address] : [],
-            city: city,
-            postalCode: postalCode,
-            country: "Colombia"
-        }]
+        identifier: [{ system: "http://example.com/id", value: identifierValue }]
     };
 
     try {
@@ -60,11 +36,9 @@ document.getElementById('patientForm').addEventListener('submit', async function
         }
 
         const data = await response.json();
-        console.log('Success:', data);
         alert(`Paciente creado exitosamente! ID: ${data.id || data._id}`);
         document.getElementById('patientForm').reset();
     } catch (error) {
-        console.error('Error:', error);
-        alert(`Hubo un error al crear el paciente: ${error.message}`);
+        alert(`Error al crear paciente: ${error.message}`);
     }
 });

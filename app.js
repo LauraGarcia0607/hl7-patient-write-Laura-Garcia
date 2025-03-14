@@ -20,17 +20,10 @@ document.getElementById('patientForm').addEventListener('submit', async function
 
     const patient = {
         resourceType: "Patient",
-        name: [{
-            use: "official",
-            given: [name],
-            family: familyName
-        }],
+        name: [{ use: "official", given: [name], family: familyName }],
         gender,
         birthDate,
-        identifier: [{
-            system: identifierSystem,
-            value: identifierValue
-        }],
+        identifier: [{ system: identifierSystem, value: identifierValue }],
         telecom: [
             cellPhone ? { system: "phone", value: cellPhone, use: "mobile" } : null,
             email ? { system: "email", value: email, use: "home" } : null
@@ -45,7 +38,7 @@ document.getElementById('patientForm').addEventListener('submit', async function
     };
 
     try {
-        const response = await fetch('https://hl7-fhir-ehr-laura-garcia.onrender.com/patient/', {
+        const response = await fetch('https://hl7-fhir-ehr-laura-garcia.onrender.com/patient', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(patient)
@@ -60,6 +53,7 @@ document.getElementById('patientForm').addEventListener('submit', async function
         alert(`Paciente creado exitosamente! ID: ${data.id}`);
         document.getElementById('patientForm').reset();
     } catch (error) {
+        console.error('Error en la solicitud:', error);
         alert(`Hubo un error al crear el paciente: ${error.message}`);
     }
 });

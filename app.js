@@ -45,17 +45,17 @@ document.getElementById('patientForm').addEventListener('submit', async function
     };
 
     try {
-        const response = await fetch('https://hl7-fhir-ehr-laura-garcia.onrender.com/patient', {
+        const response = await fetch('https://cors-anywhere.herokuapp.com/https://hl7-fhir-ehr-laura-garcia.onrender.com/patient', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'  // Asegura que la respuesta sea JSON
+                'Accept': 'application/json'
             },
             body: JSON.stringify(patient)
         });
 
         if (!response.ok) {
-            const errorData = await response.text(); // Captura la respuesta aunque sea error
+            const errorData = await response.text();
             throw new Error(`Error en la API: ${response.status} - ${errorData}`);
         }
 

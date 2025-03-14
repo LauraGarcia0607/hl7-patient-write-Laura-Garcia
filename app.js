@@ -45,7 +45,7 @@ document.getElementById('patientForm').addEventListener('submit', async function
     };
 
     try {
-        const response = await fetch('https://cors-anywhere.herokuapp.com/https://hl7-fhir-ehr-laura-garcia.onrender.com/patient', {
+        const response = await fetch('https://hl7-fhir-ehr-laura-garcia.onrender.com/patient', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

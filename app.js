@@ -31,7 +31,23 @@ document.getElementById('patientForm').addEventListener('submit', async function
         });
 
         const data = await response.json();
-        window.alert(`Paciente creado exitosamente! ID: ${data.id || data._id}`);
+        const message = document.createElement('div');
+        message.style.position = 'fixed';
+        message.style.top = '20px';
+        message.style.left = '50%';
+        message.style.transform = 'translateX(-50%)';
+        message.style.backgroundColor = 'green';
+        message.style.color = 'white';
+        message.style.padding = '10px';
+        message.style.borderRadius = '5px';
+        message.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
+        message.innerText = `Paciente creado exitosamente! ID: ${data.id || data._id}`;
+        document.body.appendChild(message);
+
+        setTimeout(() => {
+            message.remove();
+        }, 5000);
+
         document.getElementById('patientForm').reset();
     } catch (error) {
         console.error("Error al crear paciente", error);

@@ -30,14 +30,10 @@ document.getElementById('patientForm').addEventListener('submit', async function
             body: JSON.stringify(patient)
         });
 
-        if (!response.ok) {
-            throw new Error(`Error en la API: ${response.status}`);
-        }
-
         const data = await response.json();
         window.alert(`Paciente creado exitosamente! ID: ${data.id || data._id}`);
         document.getElementById('patientForm').reset();
     } catch (error) {
-        window.alert("Error al crear paciente");
+        console.error("Error al crear paciente", error);
     }
 });

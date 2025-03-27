@@ -31,22 +31,27 @@ document.getElementById('patientForm').addEventListener('submit', async function
         });
 
         const data = await response.json();
-        const message = document.createElement('div');
-        message.style.position = 'fixed';
-        message.style.top = '20px';
-        message.style.left = '50%';
-        message.style.transform = 'translateX(-50%)';
-        message.style.backgroundColor = 'green';
-        message.style.color = 'white';
-        message.style.padding = '10px';
-        message.style.borderRadius = '5px';
-        message.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
-        message.innerText = `Paciente creado exitosamente! ID: ${data.id || data._id}`;
-        document.body.appendChild(message);
+        if (data.id || data._id) {
+            const message = document.createElement('div');
+            message.style.position = 'fixed';
+            message.style.top = '20px';
+            message.style.left = '50%';
+            message.style.transform = 'translateX(-50%)';
+            message.style.backgroundColor = 'green';
+            message.style.color = 'white';
+            message.style.padding = '10px';
+            message.style.borderRadius = '5px';
+            message.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
+            message.style.zIndex = '1000';
+            message.innerText = `Paciente creado exitosamente! ID: ${data.id || data._id}`;
+            document.body.appendChild(message);
 
-        setTimeout(() => {
-            message.remove();
-        }, 5000);
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        } else {
+            alert("Paciente creado, pero no se recibió un ID.");
+        }
 
         document.getElementById('patientForm').reset();
     } catch (error) {

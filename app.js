@@ -5,23 +5,47 @@ document.getElementById('patientForm').addEventListener('submit', async function
     const familyName = document.getElementById('familyName').value.trim();
     const gender = document.getElementById('gender').value;
     const birthDate = document.getElementById('birthDate').value;
+    const identifierSystem = document.getElementById('identifierSystem').value.trim();
     const identifierValue = document.getElementById('identifierValue').value.trim();
+    const cellPhone = document.getElementById('cellPhone').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const city = document.getElementById('city').value.trim();
+    const postalCode = document.getElementById('postalCode').value.trim();
 
-    if (!name || !familyName || !gender || !birthDate || !identifierValue) {
+    if (!name || !familyName || !gender || !birthDate || !identifierSystem || !identifierValue) {
         alert("Por favor, complete todos los campos obligatorios.");
         return;
     }
 
     const patient = {
         resourceType: "Patient",
-        name: [{ use: "official", given: [name], family: familyName }],
+        name: [{
+            use: "official",
+            given: [name],
+            family: familyName
+        }],
         gender: gender,
         birthDate: birthDate,
-        identifier: [{ system: "http://example.com/id", value: identifierValue }]
+        identifier: [{
+            system: identifierSystem,
+            value: identifierValue
+        }],
+        telecom: [
+            cellPhone ? { system: "phone", value: cellPhone, use: "home" } : null,
+            email ? { system: "email", value: email, use: "home" } : null
+        ].filter(Boolean),
+        address: [{
+            use: "home",
+            line: address ? [address] : [],
+            city: city,
+            postalCode: postalCode,
+            country: "Colombia"
+        }]
     };
 
     try {
-        const response = await fetch('https://hl7-patient-write-laura-garcia-8518.onrender.com/patient', {
+        const response = await fetch('https://cors-anywhere.herokuapp.com/https://hl7-fhir-ehr-laura-garcia.onrender.com/patient', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,31 +54,17 @@ document.getElementById('patientForm').addEventListener('submit', async function
             body: JSON.stringify(patient)
         });
 
-        const data = await response.json();
-        if (data.id || data._id) {
-            const message = document.createElement('div');
-            message.style.position = 'fixed';
-            message.style.top = '20px';
-            message.style.left = '50%';
-            message.style.transform = 'translateX(-50%)';
-            message.style.backgroundColor = 'green';
-            message.style.color = 'white';
-            message.style.padding = '10px';
-            message.style.borderRadius = '5px';
-            message.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
-            message.style.zIndex = '1000';
-            message.innerText = `Paciente creado exitosamente! ID: ${data.id || data._id}`;
-            document.body.appendChild(message);
-
-            setTimeout(() => {
-                message.remove();
-            }, 5000);
-        } else {
-            alert("Paciente creado, pero no se recibió un ID.");
+        if (!response.ok) {
+            const errorData = await response.text();
+            throw new Error(`Error en la API: ${response.status} - ${errorData}`);
         }
 
+        const data = await response.json();
+        console.log('Success:', data);
+        alert(`Paciente creado exitosamente! ID: ${data.id || data._id}`);
         document.getElementById('patientForm').reset();
     } catch (error) {
-        console.error("Error al crear paciente", error);
+        console.error('Error:', error);
+        alert(`Hubo un error al crear el paciente: ${error.message}`);
     }
 });
